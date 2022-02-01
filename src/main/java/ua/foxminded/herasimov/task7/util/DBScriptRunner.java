@@ -1,4 +1,4 @@
-package ua.foxminded.herasimov.task7;
+package ua.foxminded.herasimov.task7.util;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
 
@@ -10,18 +10,16 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class TableCreator {
+public class DBScriptRunner {
 
-    private final DBConnection dbConnection = new DBConnection();
-
-    public void createEmptyTables(String sqlScriptFileName) {
-        try (Connection connection = dbConnection.getConnection()) {
+    public void runScript(String sqlScriptFileName) {
+        try (Connection connection = DBConnection.getInstance().getConnection()) {
             ScriptRunner scriptRunner = new ScriptRunner(connection);
             ClassLoader loader = this.getClass().getClassLoader();
             File sqlScript = new File(loader.getResource(sqlScriptFileName).toURI());
             BufferedReader reader = new BufferedReader(new FileReader(sqlScript));
             scriptRunner.runScript(reader);
-        } catch (SQLException | FileNotFoundException | URISyntaxException e) {
+        } catch (FileNotFoundException | URISyntaxException | SQLException e) {
             e.printStackTrace();
         }
 
