@@ -17,15 +17,15 @@ public class BDTestDataGenerator {
     private final GroupDao groupDao = new GroupDao();
     private final StudentDao studentDao = new StudentDao();
     private final CourseDao courseDao = new CourseDao();
-    private DataContainer container = new DataContainer();
+    private final DataContainer container = new DataContainer();
     private final Random rand = new Random();
 
     public void generateTestData() {
-        container.initData();
         generateGroups();
         generateStudents();
         generateCourses();
         assignStudentsToGroups();
+        assignStudentsToCourses();
     }
 
     private void generateCourses() {
@@ -70,7 +70,6 @@ public class BDTestDataGenerator {
     }
 
     private void assignStudentsToGroups() {
-
         int studentCount = 0;
         List<Group> groupsFromDB = null;
         List<Student> studentsFromDB = null;
@@ -86,6 +85,27 @@ public class BDTestDataGenerator {
                 studentCount++;
             }
         }
+    }
+
+    private void assignStudentsToCourses() {
+
+        List<Course> coursesFromDB = null;
+        List<Student> studentsFromDB = null;
+
+        try {
+            coursesFromDB = courseDao.getAll();
+            studentsFromDB = studentDao.getAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        for (Student student : studentsFromDB) {
+            for (int i = 0; i < (rand.nextInt(3) + 1); i++) {
+                int randomCourseIndex = rand.nextInt(coursesFromDB.size());
+                studentDao.addStudCourse(student.getId(), coursesFromDB.get(randomCourseIndex).getId());
+            }
+        }
+
     }
 
 }

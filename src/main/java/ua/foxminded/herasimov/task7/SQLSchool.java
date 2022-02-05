@@ -1,5 +1,6 @@
 package ua.foxminded.herasimov.task7;
 
+import ua.foxminded.herasimov.task7.service.AppRunner;
 import ua.foxminded.herasimov.task7.service.BDTestDataGenerator;
 import ua.foxminded.herasimov.task7.util.DBScriptRunner;
 
@@ -14,5 +15,7 @@ public class SQLSchool {
         BDTestDataGenerator gen = new BDTestDataGenerator();
         gen.generateTestData();
 
+        AppRunner runner = new AppRunner();
+        runner.startApp();
     }
 }

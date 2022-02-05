@@ -7,10 +7,10 @@ import java.sql.SQLException;
 public class DBConnection {
 
     private static DBConnection instance;
-    private Connection connection;
-    private String DB_URL = "jdbc:postgresql://127.0.0.1:5432/school";
-    private String USER_NAME = "myuser";
-    private String PASSWORD = "password";
+    private final Connection connection;
+    private static final String DB_URL = "jdbc:postgresql://127.0.0.1:5432/school";
+    private static final String USER_NAME = "myuser";
+    private static final String PASSWORD = "password";
 
     private DBConnection() throws SQLException {
         try {

@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 
 public class DataContainer {
 
-    private List<String> courseNames;
-    private List<String> studentFirstNames;
-    private List<String> studentLastNames;
+    private final List<String> courseNames;
+    private final List<String> studentFirstNames;
+    private final List<String> studentLastNames;
 
 
-    public void initData() {
+    {
         courseNames = new ArrayList<>();
         courseNames.add("Math");
         courseNames.add("Biology");

@@ -23,6 +23,7 @@ public class GroupDao {
     }
 
     public int add(Group group) {
+
         String sql = "INSERT INTO groups (name) VALUES (?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, group.getName());
@@ -34,12 +35,14 @@ public class GroupDao {
     }
 
     public List<Group> getAll() throws SQLException {
+
         String sql = "SELECT * FROM groups";
         try (PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             List<Group> result = new ArrayList<>();
+            Group group;
             while (resultSet.next()) {
-                Group group = new Group();
+                group = new Group();
                 group.setId(resultSet.getInt("group_id"));
                 group.setName(resultSet.getString("name"));
                 result.add(group);
@@ -49,5 +52,32 @@ public class GroupDao {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    public List<Group> findAllGroupsWithLessEqualStudCount(Integer studentCount) {
+
+        String sql = "SELECT groups.group_id, groups.name\n" +
+                     "FROM groups\n" +
+                     "INNER JOIN\n" +
+                     "(SELECT group_id, COUNT(group_id) FROM students GROUP BY group_id HAVING COUNT(group_id) <= (?)" +
+                     ") count_groups\n" +
+                     "ON groups.group_id = count_groups.group_id;";
+
+        List<Group> result = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, studentCount);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                Group group;
+                while (resultSet.next()) {
+                    group = new Group();
+                    group.setId(resultSet.getInt("group_id"));
+                    group.setName(resultSet.getString("name"));
+                    result.add(group);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }
