@@ -1,7 +1,6 @@
 package ua.foxminded.herasimov.task7.dao;
 
 import ua.foxminded.herasimov.task7.entity.Group;
-import ua.foxminded.herasimov.task7.util.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,39 +11,33 @@ import java.util.List;
 
 public class GroupDao {
 
-    private Connection connection;
+    private final Connection connection;
 
-    {
-        try {
-            connection = DBConnection.getInstance().getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public GroupDao(Connection connection) {
+        this.connection = connection;
     }
 
-    public int add(Group group) {
-
+    public int addGroup(Group group) throws SQLException {
         String sql = "INSERT INTO groups (name) VALUES (?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, group.getName());
             return statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            return 0;
+            throw e;
         }
     }
 
-    public List<Group> getAll() throws SQLException {
-
+    public List<Group> findAll() throws SQLException {
         String sql = "SELECT * FROM groups";
         try (PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             List<Group> result = new ArrayList<>();
-            Group group;
             while (resultSet.next()) {
-                group = new Group();
-                group.setId(resultSet.getInt("group_id"));
-                group.setName(resultSet.getString("name"));
+                Group group = new Group.Builder()
+                    .withId(resultSet.getInt("group_id"))
+                    .withName(resultSet.getString("name"))
+                    .build();
                 result.add(group);
             }
             return result;
@@ -54,8 +47,7 @@ public class GroupDao {
         }
     }
 
-    public List<Group> findAllGroupsWithLessEqualStudCount(Integer studentCount) {
-
+    public List<Group> findAllGroupsWithLessOrEqualsStudCount(Integer studentCount) throws SQLException {
         String sql = "SELECT groups.group_id, groups.name\n" +
                      "FROM groups\n" +
                      "INNER JOIN\n" +
@@ -69,14 +61,16 @@ public class GroupDao {
             try (ResultSet resultSet = statement.executeQuery()) {
                 Group group;
                 while (resultSet.next()) {
-                    group = new Group();
-                    group.setId(resultSet.getInt("group_id"));
-                    group.setName(resultSet.getString("name"));
+                    group = new Group.Builder()
+                        .withId(resultSet.getInt("group_id"))
+                        .withName(resultSet.getString("name"))
+                        .build();
                     result.add(group);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw e;
         }
         return result;
     }

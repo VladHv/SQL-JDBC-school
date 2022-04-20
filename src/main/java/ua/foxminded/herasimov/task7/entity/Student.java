@@ -11,6 +11,39 @@ public class Student {
     private Integer groupId;
     private Set<Course> courses;
 
+    public static class Builder {
+        private Student newStudent = new Student();
+
+        public Builder withId(int id) {
+            newStudent.id = id;
+            return this;
+        }
+
+        public Builder withFirstName(String firstName) {
+            newStudent.firstName = firstName;
+            return this;
+        }
+
+        public Builder withLastName(String lastName) {
+            newStudent.lastName = lastName;
+            return this;
+        }
+
+        public Builder withGroupId(int groupId) {
+            newStudent.groupId = groupId;
+            return this;
+        }
+
+        public Builder withCourses(Set<Course> courses) {
+            newStudent.courses = courses;
+            return this;
+        }
+
+        public Student build() {
+            return newStudent;
+        }
+    }
+
     public Integer getId() {
         return id;
     }
@@ -67,12 +100,12 @@ public class Student {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return Objects.equals(id, student.id) && Objects.equals(firstName, student.firstName) &&
-               Objects.equals(lastName, student.lastName) && Objects.equals(groupId, student.groupId);
+        return Objects.equals(groupId, student.groupId) && Objects.equals(firstName, student.firstName) &&
+               Objects.equals(lastName, student.lastName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName);
+        return Objects.hash(groupId, firstName, lastName);
     }
 }

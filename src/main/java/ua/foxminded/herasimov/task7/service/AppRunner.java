@@ -8,92 +8,90 @@ import ua.foxminded.herasimov.task7.entity.Group;
 import ua.foxminded.herasimov.task7.entity.Student;
 import ua.foxminded.herasimov.task7.view.AppView;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
 public class AppRunner {
 
-    private final StudentDao studentDao = new StudentDao();
-    private final GroupDao groupDao = new GroupDao();
-    private final CourseDao courseDao = new CourseDao();
+    private final Connection connection;
+    private StudentDao studentDao;
+    private GroupDao groupDao;
+    private CourseDao courseDao;
     private final AppView view = new AppView();
     private final Scanner scanner = new Scanner(System.in);
 
-    public void startApp() {
-        view.showMessage(AppView.MAIN_MENU);
-        menuChoose();
+    public AppRunner(Connection connection) {
+        this.connection = connection;
     }
 
-    private void menuChoose() {
+    public void startApp() throws SQLException {
+        studentDao = new StudentDao(connection);
+        groupDao = new GroupDao(connection);
+        courseDao = new CourseDao(connection);
+
+        view.showMessage(AppView.MAIN_MENU);
+        int result = chooseFunction();
+        view.showActionResult(result);
+        if (result >= 0) {
+            startApp();
+        }
+    }
+
+    private int chooseFunction() throws SQLException {
         view.showMessage(AppView.CHOOSE);
         int functionNumber = scanner.nextInt();
         switch (functionNumber) {
             case 1:
-                findAllGroupsWithLessOrEqualStudentCount();
-                break;
+                return findAllGroupsWithLessOrEqualStudentCount();
             case 2:
-                findAllStudentsRelatedToCourseWithGivenName();
-                break;
+                return findAllStudentsRelatedToCourseWithGivenName();
             case 3:
-                addNewStudent();
-                break;
+                return addNewStudent();
             case 4:
-                deleteStudentById();
-                break;
+                return deleteStudentById();
             case 5:
-                addStudentToCourse();
-                break;
+                return addStudentToCourse();
             case 6:
-                removeStudentFromCourse();
-                break;
+                return removeStudentFromCourse();
             default:
-                break;
+                return -1;
         }
-
     }
 
-    private void removeStudentFromCourse() {
+    private int removeStudentFromCourse() throws SQLException {
         view.showMessage(AppView.STUDENT_ID);
         int studentId = scanner.nextInt();
         Set<Course> studentCourses = courseDao.getCoursesByStudentId(studentId);
         if (studentCourses.isEmpty()) {
-            view.showMessage(AppView.EMPTY);
+            return 0;
         } else {
-            for (Course course : studentCourses) {
-                view.showMessage(course.getId().toString() + " " + course.getName());
-            }
+            view.showCourseList(studentCourses);
             view.showMessage(AppView.COURSE_ID);
             int courseId = scanner.nextInt();
-            String message = studentDao.removeStudCourse(studentId, courseId);
-            view.showMessage(message);
+            return studentDao.removeStudentFromCourse(studentId, courseId);
         }
-        menuChoose();
     }
 
-    private void addStudentToCourse() {
+    private int addStudentToCourse() throws SQLException {
         view.showMessage(AppView.STUDENT_ID);
         int studentId = scanner.nextInt();
-        List<Course> allCourses = courseDao.getAll();
-        for (Course course : allCourses) {
-            view.showMessage(course.getId().toString() + " " + course.getName());
-        }
+        List<Course> allCourses = courseDao.findAll();
+        view.showCourseList(allCourses);
         view.showMessage(AppView.COURSE_ID);
         int courseId = scanner.nextInt();
-        String message = studentDao.addStudCourse(studentId, courseId);
-        view.showMessage(message);
-        menuChoose();
+        return studentDao.addStudentToCourse(studentId, courseId);
     }
 
-    private void deleteStudentById() {
+    private int deleteStudentById() throws SQLException {
         view.showMessage(AppView.STUDENT_ID);
         int studentId = scanner.nextInt();
-        String message = studentDao.deleteById(studentId);
-        view.showMessage(message);
-        menuChoose();
+        return studentDao.deleteById(studentId);
     }
 
-    private void addNewStudent() {
+    private int addNewStudent() throws SQLException {
         Student student = new Student();
         view.showMessage(AppView.FIRST_NAME);
         String firstName = scanner.next();
@@ -102,37 +100,32 @@ public class AppRunner {
 
         student.setFirstName(firstName);
         student.setLastName(lastName);
-        String message = studentDao.add(student);
-        view.showMessage(message);
-        menuChoose();
+        return studentDao.add(student);
     }
 
-    private void findAllStudentsRelatedToCourseWithGivenName() {
-        List<Course> allCourses = courseDao.getAll();
-        for (Course course : allCourses) {
-            view.showMessage(course.getId().toString() + " " + course.getName());
-        }
+    private int findAllStudentsRelatedToCourseWithGivenName() throws SQLException {
+        List<Course> allCourses = courseDao.findAll();
+        view.showCourseList(allCourses);
         view.showMessage(AppView.COURSE_ID);
         int courseId = scanner.nextInt();
         Set<Student> students = studentDao.getStudentsByCourseId(courseId);
-        for (Student student : students) {
-            view.showMessage(student.getId().toString() + " " +
-                             student.getFirstName() + " " +
-                             student.getLastName());
+        if (students.isEmpty()) {
+            return 0;
+        } else {
+            view.showStudentList(students);
+            return 1;
         }
-        menuChoose();
-
     }
 
-    private void findAllGroupsWithLessOrEqualStudentCount() {
+    private int findAllGroupsWithLessOrEqualStudentCount() throws SQLException {
         view.showMessage(AppView.STUDENT_COUNT);
         int studentCount = scanner.nextInt();
-        List<Group> groups = groupDao.findAllGroupsWithLessEqualStudCount(studentCount);
-        for (Group group : groups) {
-            view.showMessage(group.getId().toString() + " " +
-                             group.getName());
+        List<Group> groups = groupDao.findAllGroupsWithLessOrEqualsStudCount(studentCount);
+        if (groups.isEmpty()) {
+            return 0;
+        } else {
+            view.showGroupList(groups);
+            return 1;
         }
-        menuChoose();
-
     }
 }

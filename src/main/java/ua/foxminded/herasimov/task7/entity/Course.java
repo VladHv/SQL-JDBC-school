@@ -10,6 +10,40 @@ public class Course {
     private String description;
     private Set<Student> students;
 
+    public static class Builder {
+        private Course newCourse;
+
+        public Builder() {
+            newCourse = new Course();
+        }
+
+        public Builder withId(Integer id) {
+            newCourse.id = id;
+            return this;
+        }
+
+        public Builder withName(String name) {
+            newCourse.name = name;
+            return this;
+        }
+
+        public Builder withDescription(String description) {
+            newCourse.description = description;
+            return this;
+        }
+
+        public Builder withStudents(Set<Student> students) {
+            newCourse.students = students;
+            return this;
+        }
+
+        public Course build() {
+            return newCourse;
+        }
+
+
+    }
+
     public Integer getId() {
         return id;
     }
@@ -57,12 +91,11 @@ public class Course {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Course course = (Course) o;
-        return Objects.equals(id, course.id) && Objects.equals(name, course.name) &&
-               Objects.equals(description, course.description);
+        return name.equals(course.name) && description.equals(course.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description);
+        return Objects.hash(name, description);
     }
 }

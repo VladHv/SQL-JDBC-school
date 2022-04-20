@@ -1,7 +1,6 @@
 package ua.foxminded.herasimov.task7.dao;
 
 import ua.foxminded.herasimov.task7.entity.Student;
-import ua.foxminded.herasimov.task7.util.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,32 +13,25 @@ import java.util.Set;
 
 public class StudentDao {
 
-    private Connection connection;
+    private final Connection connection;
 
-    {
-        try {
-            connection = DBConnection.getInstance().getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public StudentDao(Connection connection) {
+        this.connection = connection;
     }
 
-    public String add(Student student) {
+    public int add(Student student) throws SQLException {
         String sql = "INSERT INTO students (first_name, last_name) VALUES (?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, student.getFirstName());
             statement.setString(2, student.getLastName());
-            if (statement.executeUpdate() > 0) {
-                return "Student added!";
-            } else {
-                return "Something went wrong";
-            }
+            return statement.executeUpdate();
         } catch (SQLException e) {
-            return e.getMessage();
+            e.printStackTrace();
+            throw e;
         }
     }
 
-    public int updateGroupById(Integer studentId, Integer groupId) {
+    public int updateGroupByStudentId(Integer studentId, Integer groupId) throws SQLException {
         String sql = "UPDATE students SET group_id = (?) WHERE student_id = (?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, groupId);
@@ -47,21 +39,22 @@ public class StudentDao {
             return statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            return 0;
+            throw e;
         }
     }
 
-    public List<Student> getAll() throws SQLException {
+    public List<Student> findAll() throws SQLException {
         String sql = "SELECT * FROM students";
         try (PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             List<Student> result = new ArrayList<>();
             while (resultSet.next()) {
-                Student student = new Student();
-                student.setId(resultSet.getInt("student_id"));
-                student.setGroupId(resultSet.getInt("group_id"));
-                student.setFirstName(resultSet.getString("first_name"));
-                student.setLastName(resultSet.getString("last_name"));
+                Student student = new Student.Builder()
+                    .withId(resultSet.getInt("student_id"))
+                    .withGroupId(resultSet.getInt("group_id"))
+                    .withFirstName(resultSet.getString("first_name"))
+                    .withLastName(resultSet.getString("last_name"))
+                    .build();
                 result.add(student);
             }
             return result;
@@ -71,7 +64,7 @@ public class StudentDao {
         }
     }
 
-    public String addStudCourse(Integer studentId, Integer courseId) {
+    public int addStudentToCourse(Integer studentId, Integer courseId) throws SQLException {
         String sql = "INSERT  INTO students_courses (student_id, course_id) " +
                      "SELECT student_id, course_id " +
                      "FROM students, courses " +
@@ -80,19 +73,15 @@ public class StudentDao {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, studentId);
             statement.setInt(2, courseId);
-            int rowsAdded = statement.executeUpdate();
-            if (rowsAdded > 0) {
-                return "A course was added successfully!";
-            } else {
-                return "Something went wrong";
-            }
+            return statement.executeUpdate();
         } catch (SQLException e) {
-            return e.getMessage();
+            e.printStackTrace();
+            throw e;
         }
     }
 
 
-    public Set<Student> getStudentsByCourseId(Integer courseId) {
+    public Set<Student> getStudentsByCourseId(Integer courseId) throws SQLException {
         String sql = "SELECT student_id FROM students_courses WHERE course_id =(?) ORDER BY student_id ASC";
         Set<Student> result = new LinkedHashSet<>();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -104,55 +93,52 @@ public class StudentDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw e;
         }
         return result;
     }
 
-    public String deleteById(Integer studentId) {
+    public int deleteById(Integer studentId) throws SQLException {
         String sql = "DELETE FROM students WHERE student_id = (?) ";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, studentId);
-            if (statement.executeUpdate() > 0) {
-                return "Student removed!";
-            } else {
-                return "Student not exist!";
-            }
+            return statement.executeUpdate();
         } catch (SQLException e) {
-            return e.getMessage();
+            e.printStackTrace();
+            throw e;
         }
     }
 
-    public String removeStudCourse(int studentId, int courseId) {
+    public int removeStudentFromCourse(int studentId, int courseId) throws SQLException {
         String sql = "DELETE FROM students_courses WHERE student_id = (?) AND course_id = (?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, studentId);
             statement.setInt(2, courseId);
-            int rowsAdded = statement.executeUpdate();
-            if (rowsAdded > 0) {
-                return "A course was removed successfully!";
-            } else {
-                return "Something went wrong";
-            }
+            return statement.executeUpdate();
         } catch (SQLException e) {
-            return e.getMessage();
+            e.printStackTrace();
+            throw e;
         }
     }
 
-    public Student findById(Integer id) {
+    public Student findById(Integer id) throws SQLException {
         String sql = "SELECT * FROM students WHERE student_id = (?)";
         Student student = new Student();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    student.setId(resultSet.getInt("student_id"));
-                    student.setFirstName(resultSet.getString("first_name"));
-                    student.setLastName(resultSet.getString("last_name"));
-                    student.setGroupId(resultSet.getInt("group_id"));
+                    student = new Student.Builder()
+                        .withId(resultSet.getInt("student_id"))
+                        .withFirstName(resultSet.getString("first_name"))
+                        .withLastName(resultSet.getString("last_name"))
+                        .withGroupId(resultSet.getInt("group_id"))
+                        .build();
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw e;
         }
         return student;
     }

@@ -24,5 +24,5 @@ CREATE TABLE courses
 CREATE TABLE students_courses
 (
     student_id INTEGER REFERENCES students (student_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    course_id INTEGER REFERENCES students (student_id) ON UPDATE CASCADE ON DELETE CASCADE
+    course_id INTEGER REFERENCES courses (course_id) ON UPDATE CASCADE ON DELETE CASCADE
 );

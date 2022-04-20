@@ -1,21 +1,31 @@
 package ua.foxminded.herasimov.task7;
 
 import ua.foxminded.herasimov.task7.service.AppRunner;
-import ua.foxminded.herasimov.task7.service.BDTestDataGenerator;
+import ua.foxminded.herasimov.task7.service.DBTestDataGenerator;
+import ua.foxminded.herasimov.task7.util.DBConnection;
 import ua.foxminded.herasimov.task7.util.DBScriptRunner;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public class SQLSchool {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
-        String sqlScriptFileName = "create_tables.sql";
+        try (Connection connection = new DBConnection().getConnection()) {
+            String sqlScriptFile = "script/create_tables.sql";
 
-        DBScriptRunner creator = new DBScriptRunner();
-        creator.runScript(sqlScriptFileName);
+            DBScriptRunner scriptRunner = new DBScriptRunner(connection);
+            scriptRunner.runScript(sqlScriptFile);
+        }
 
-        BDTestDataGenerator gen = new BDTestDataGenerator();
-        gen.generateTestData();
+        try (Connection connection = new DBConnection().getConnection()) {
+            DBTestDataGenerator gen = new DBTestDataGenerator(connection);
+            gen.generateTestData();
+        }
 
-        AppRunner runner = new AppRunner();
-        runner.startApp();
+        try (Connection connection = new DBConnection().getConnection()) {
+            AppRunner runner = new AppRunner(connection);
+            runner.startApp();
+        }
     }
 }

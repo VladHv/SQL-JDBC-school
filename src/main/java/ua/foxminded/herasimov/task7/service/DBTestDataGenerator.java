@@ -8,19 +8,27 @@ import ua.foxminded.herasimov.task7.entity.Group;
 import ua.foxminded.herasimov.task7.entity.Student;
 import ua.foxminded.herasimov.task7.util.DataContainer;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
 
-public class BDTestDataGenerator {
+public class DBTestDataGenerator {
 
-    private final GroupDao groupDao = new GroupDao();
-    private final StudentDao studentDao = new StudentDao();
-    private final CourseDao courseDao = new CourseDao();
-    private final DataContainer container = new DataContainer();
+    private final Connection connection;
+    private StudentDao studentDao;
+    private GroupDao groupDao;
+    private CourseDao courseDao;
     private final Random rand = new Random();
 
-    public void generateTestData() {
+    public DBTestDataGenerator(Connection connection) {
+        this.connection = connection;
+    }
+
+    public void generateTestData() throws SQLException {
+        studentDao = new StudentDao(connection);
+        groupDao = new GroupDao(connection);
+        courseDao = new CourseDao(connection);
         generateGroups();
         generateStudents();
         generateCourses();
@@ -28,23 +36,23 @@ public class BDTestDataGenerator {
         assignStudentsToCourses();
     }
 
-    private void generateCourses() {
-        List<String> courseNames = container.getCourseNames();
+    private void generateCourses() throws SQLException {
+        List<String> courseNames = DataContainer.getCourseNames();
         Course course;
         for (String courseName : courseNames) {
             course = new Course();
             course.setName(courseName);
             course.setDescription(courseName + " is cool!!");
-            courseDao.add(course);
+            courseDao.addCourse(course);
         }
     }
 
-    private void generateGroups() {
+    private void generateGroups() throws SQLException {
         Group group;
         for (int i = 0; i < 10; i++) {
             group = new Group();
             group.setName(randomGroupName());
-            groupDao.add(group);
+            groupDao.addGroup(group);
         }
     }
 
@@ -56,9 +64,9 @@ public class BDTestDataGenerator {
                (rand.nextInt(89) + 10);
     }
 
-    private void generateStudents() {
-        List<String> studentFirstNames = container.getStudentFirstNames();
-        List<String> studentLastNames = container.getStudentLastNames();
+    private void generateStudents() throws SQLException {
+        List<String> studentFirstNames = DataContainer.getStudentFirstNames();
+        List<String> studentLastNames = DataContainer.getStudentLastNames();
 
         Student student;
         for (int i = 0; i < 200; i++) {
@@ -69,40 +77,39 @@ public class BDTestDataGenerator {
         }
     }
 
-    private void assignStudentsToGroups() {
+    private void assignStudentsToGroups() throws SQLException {
         int studentCount = 0;
         List<Group> groupsFromDB = null;
         List<Student> studentsFromDB = null;
         try {
-            groupsFromDB = groupDao.getAll();
-            studentsFromDB = studentDao.getAll();
+            groupsFromDB = groupDao.findAll();
+            studentsFromDB = studentDao.findAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         for (Group gr : groupsFromDB) {
             for (int i = 0; i < (rand.nextInt(21) + 10); i++) {
-                studentDao.updateGroupById(studentsFromDB.get(studentCount).getId(), gr.getId());
+                studentDao.updateGroupByStudentId(studentsFromDB.get(studentCount).getId(), gr.getId());
                 studentCount++;
             }
         }
     }
 
-    private void assignStudentsToCourses() {
+    private void assignStudentsToCourses() throws SQLException {
 
         List<Course> coursesFromDB = null;
         List<Student> studentsFromDB = null;
 
         try {
-            coursesFromDB = courseDao.getAll();
-            studentsFromDB = studentDao.getAll();
+            coursesFromDB = courseDao.findAll();
+            studentsFromDB = studentDao.findAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         for (Student student : studentsFromDB) {
             for (int i = 0; i < (rand.nextInt(3) + 1); i++) {
                 int randomCourseIndex = rand.nextInt(coursesFromDB.size());
-                studentDao.addStudCourse(student.getId(), coursesFromDB.get(randomCourseIndex).getId());
+                studentDao.addStudentToCourse(student.getId(), coursesFromDB.get(randomCourseIndex).getId());
             }
         }
 
