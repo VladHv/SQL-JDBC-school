@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.URISyntaxException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,8 +22,7 @@ import java.util.Set;
 
 class CourseDaoTest {
 
-    Connection connection = DBConnection.getConnection();
-    CourseDao dao = new CourseDao(connection);
+    CourseDao dao = new CourseDao();
 
     @BeforeAll
     static void createTables() throws FileNotFoundException, URISyntaxException {
@@ -73,7 +71,7 @@ class CourseDaoTest {
         String sql = "SELECT * FROM courses";
         List<Course> result = new ArrayList<>();
         Course course;
-        try (PreparedStatement statement = connection.prepareStatement(sql);
+        try (PreparedStatement statement = DBConnection.getConnection().prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 course = new Course.Builder()

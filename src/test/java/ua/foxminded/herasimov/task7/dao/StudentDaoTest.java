@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.URISyntaxException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,8 +20,7 @@ import java.util.*;
 
 class StudentDaoTest {
 
-    Connection connection = DBConnection.getConnection();
-    StudentDao dao = new StudentDao(connection);
+    StudentDao dao = new StudentDao();
 
     @BeforeAll
     static void createTables() throws FileNotFoundException, URISyntaxException {
@@ -43,7 +41,7 @@ class StudentDaoTest {
     @Test
     void add_shouldInsertNewStudentToStudentsTable_whenAddStudentObject() throws SQLException {
         Student student = new Student.Builder().withGroupId(0).withFirstName("Jeff").withLastName("Eddy").build();
-        dao.add(student);
+        dao.addStudent(student);
         Assertions.assertTrue(findAllUtil().contains(student));
     }
 
@@ -100,7 +98,7 @@ class StudentDaoTest {
 
     private Map<Integer, Integer> getStudentsIdWithCoursesIdUtil() throws SQLException {
         String sql = "SELECT * FROM students_courses";
-        try (PreparedStatement statement = connection.prepareStatement(sql);
+        try (PreparedStatement statement = DBConnection.getConnection().prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             Map<Integer, Integer> studentAndCourse = new HashMap<>();
             while (resultSet.next()) {
@@ -116,7 +114,7 @@ class StudentDaoTest {
     private Student findByIdUtil(Integer id) throws SQLException {
         String sql = "SELECT * FROM students WHERE student_id = (?)";
         Student student = new Student();
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = DBConnection.getConnection().prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -137,7 +135,7 @@ class StudentDaoTest {
 
     private List<Student> findAllUtil() throws SQLException {
         String sql = "SELECT * FROM students";
-        try (PreparedStatement statement = connection.prepareStatement(sql);
+        try (PreparedStatement statement = DBConnection.getConnection().prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             List<Student> result = new ArrayList<>();
             while (resultSet.next()) {

@@ -1,6 +1,7 @@
 package ua.foxminded.herasimov.task7.dao;
 
 import ua.foxminded.herasimov.task7.entity.Group;
+import ua.foxminded.herasimov.task7.util.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,8 +14,8 @@ public class GroupDao {
 
     private final Connection connection;
 
-    public GroupDao(Connection connection) {
-        this.connection = connection;
+    public GroupDao() {
+        this.connection = DBConnection.getConnection();
     }
 
     public int addGroup(Group group) throws SQLException {

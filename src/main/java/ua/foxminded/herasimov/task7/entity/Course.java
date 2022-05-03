@@ -82,7 +82,6 @@ public class Course {
                "id=" + id +
                ", name='" + name + '\'' +
                ", description='" + description + '\'' +
-               ", students=" + students +
                '}';
     }
 

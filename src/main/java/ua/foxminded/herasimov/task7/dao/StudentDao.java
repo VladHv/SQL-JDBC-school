@@ -1,6 +1,7 @@
 package ua.foxminded.herasimov.task7.dao;
 
 import ua.foxminded.herasimov.task7.entity.Student;
+import ua.foxminded.herasimov.task7.util.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,11 +16,11 @@ public class StudentDao {
 
     private final Connection connection;
 
-    public StudentDao(Connection connection) {
-        this.connection = connection;
+    public StudentDao() {
+        this.connection = DBConnection.getConnection();
     }
 
-    public int add(Student student) throws SQLException {
+    public int addStudent(Student student) throws SQLException {
         String sql = "INSERT INTO students (first_name, last_name) VALUES (?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, student.getFirstName());

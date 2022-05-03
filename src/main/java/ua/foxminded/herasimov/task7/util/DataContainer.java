@@ -6,15 +6,14 @@ import java.util.stream.Collectors;
 
 public class DataContainer {
 
-    private static final List<String> courseNames;
-    private static final List<String> studentFirstNames;
-    private static final List<String> studentLastNames;
+    private final List<String> courseNames;
+    private final List<String> studentFirstNames;
+    private final List<String> studentLastNames;
 
-    private DataContainer() {
-        throw new IllegalStateException("Utility class");
+    public DataContainer() {
     }
 
-    static {
+    {
         courseNames = new ArrayList<>();
         courseNames.add("Math");
         courseNames.add("Biology");
@@ -54,15 +53,15 @@ public class DataContainer {
 
     }
 
-    public static List<String> getCourseNames() {
+    public List<String> getCourseNames() {
         return courseNames;
     }
 
-    public static List<String> getStudentFirstNames() {
+    public List<String> getStudentFirstNames() {
         return studentFirstNames;
     }
 
-    public static List<String> getStudentLastNames() {
+    public List<String> getStudentLastNames() {
         return studentLastNames;
     }
 }

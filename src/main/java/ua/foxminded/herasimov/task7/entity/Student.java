@@ -90,8 +90,6 @@ public class Student {
                "id=" + id +
                ", firstName='" + firstName + '\'' +
                ", lastName='" + lastName + '\'' +
-               ", groupId=" + groupId +
-               ", courses=" + courses +
                '}';
     }
 

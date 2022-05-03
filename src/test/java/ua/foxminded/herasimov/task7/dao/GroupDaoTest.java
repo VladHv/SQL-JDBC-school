@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.URISyntaxException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,8 +21,7 @@ import java.util.List;
 
 class GroupDaoTest {
 
-    Connection connection = DBConnection.getConnection();
-    GroupDao dao = new GroupDao(connection);
+    GroupDao dao = new GroupDao();
 
     @BeforeAll
     static void createTables() throws FileNotFoundException, URISyntaxException {
@@ -64,7 +62,7 @@ class GroupDaoTest {
 
     public List<Group> findAllUtil() throws SQLException {
         String sql = "SELECT * FROM groups";
-        try (PreparedStatement statement = connection.prepareStatement(sql);
+        try (PreparedStatement statement = DBConnection.getConnection().prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             List<Group> result = new ArrayList<>();
             while (resultSet.next()) {

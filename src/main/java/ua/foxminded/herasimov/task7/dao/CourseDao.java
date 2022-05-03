@@ -1,6 +1,7 @@
 package ua.foxminded.herasimov.task7.dao;
 
 import ua.foxminded.herasimov.task7.entity.Course;
+import ua.foxminded.herasimov.task7.util.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,8 +16,8 @@ public class CourseDao {
 
     private final Connection connection;
 
-    public CourseDao(Connection connection) {
-        this.connection = connection;
+    public CourseDao() {
+        this.connection = DBConnection.getConnection();
     }
 
     public int addCourse(Course course) throws SQLException {
