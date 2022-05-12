@@ -2,6 +2,8 @@ package ua.foxminded.herasimov.task7.dao;
 
 import ua.foxminded.herasimov.task7.entity.Course;
 import ua.foxminded.herasimov.task7.util.DBConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +16,7 @@ import java.util.Set;
 
 public class CourseDao {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CourseDao.class);
     private final Connection connection;
 
     public CourseDao() {
@@ -27,7 +30,7 @@ public class CourseDao {
             statement.setString(2, course.getDescription());
             return statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("Course not added to DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -47,7 +50,7 @@ public class CourseDao {
                 result.add(course);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("All courses not taken from DB because of {}", e.getMessage());
             throw e;
         }
         return result;
@@ -68,7 +71,7 @@ public class CourseDao {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("Course not taken from DB because of {}", e.getMessage());
             throw e;
         }
         return course;
@@ -85,7 +88,7 @@ public class CourseDao {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("Courses by Student ID not taken from DB because of {}", e.getMessage());
             throw e;
         }
         return result;

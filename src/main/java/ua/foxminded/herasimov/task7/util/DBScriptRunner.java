@@ -1,6 +1,8 @@
 package ua.foxminded.herasimov.task7.util;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,6 +13,7 @@ import java.sql.Connection;
 
 public class DBScriptRunner {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DBScriptRunner.class);
     private Connection connection;
 
     public DBScriptRunner(Connection connection) {
@@ -25,7 +28,7 @@ public class DBScriptRunner {
             BufferedReader reader = new BufferedReader(new FileReader(sqlScript));
             scriptRunner.runScript(reader);
         } catch (FileNotFoundException | URISyntaxException e) {
-            e.printStackTrace();
+            LOG.debug("Script not launch because of {}", e.getMessage());
         }
     }
 }

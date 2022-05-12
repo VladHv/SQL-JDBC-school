@@ -1,5 +1,7 @@
 package ua.foxminded.herasimov.task7.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.foxminded.herasimov.task7.entity.Group;
 import ua.foxminded.herasimov.task7.util.DBConnection;
 
@@ -12,6 +14,7 @@ import java.util.List;
 
 public class GroupDao {
 
+    private static final Logger LOG = LoggerFactory.getLogger(GroupDao.class);
     private final Connection connection;
 
     public GroupDao() {
@@ -24,7 +27,7 @@ public class GroupDao {
             statement.setString(1, group.getName());
             return statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("Group not added to DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -43,7 +46,7 @@ public class GroupDao {
             }
             return result;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("All groups not taken from DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -70,7 +73,7 @@ public class GroupDao {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("Groups with required student count not taken from DB because of {}", e.getMessage());
             throw e;
         }
         return result;

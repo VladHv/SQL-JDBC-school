@@ -1,5 +1,7 @@
 package ua.foxminded.herasimov.task7.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.foxminded.herasimov.task7.dao.CourseDao;
 import ua.foxminded.herasimov.task7.dao.GroupDao;
 import ua.foxminded.herasimov.task7.dao.StudentDao;
@@ -15,6 +17,7 @@ import java.util.Random;
 
 public class DBTestDataGenerator {
 
+    private final Logger LOG = LoggerFactory.getLogger(DBTestDataGenerator.class);
     private final StudentDao studentDao;
     private final GroupDao groupDao;
     private final CourseDao courseDao;
@@ -94,7 +97,7 @@ public class DBTestDataGenerator {
             groupsFromDB = groupDao.findAll();
             studentsFromDB = studentDao.findAll();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("All groups and/or students list(s) not received because of {}", e.getMessage());
         }
 
         int studentCount = 0;

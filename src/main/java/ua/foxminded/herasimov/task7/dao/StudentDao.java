@@ -1,5 +1,7 @@
 package ua.foxminded.herasimov.task7.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.foxminded.herasimov.task7.entity.Student;
 import ua.foxminded.herasimov.task7.util.DBConnection;
 
@@ -14,6 +16,7 @@ import java.util.Set;
 
 public class StudentDao {
 
+    private static final Logger LOG = LoggerFactory.getLogger(StudentDao.class);
     private final Connection connection;
 
     public StudentDao() {
@@ -27,7 +30,7 @@ public class StudentDao {
             statement.setString(2, student.getLastName());
             return statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("Student not added to DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -39,7 +42,7 @@ public class StudentDao {
             statement.setInt(2, studentId);
             return statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("Group not updated with student id in DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -60,7 +63,7 @@ public class StudentDao {
             }
             return result;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("All student not taken from DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -76,7 +79,7 @@ public class StudentDao {
             statement.setInt(2, courseId);
             return statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("Student not added to course in DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -105,7 +108,7 @@ public class StudentDao {
             statement.setInt(1, studentId);
             return statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("Student not removed from DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -138,7 +141,7 @@ public class StudentDao {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("Student not taken from DB because of {}", e.getMessage());
             throw e;
         }
         return student;

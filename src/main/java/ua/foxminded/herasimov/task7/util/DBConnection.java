@@ -1,7 +1,11 @@
 package ua.foxminded.herasimov.task7.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -11,17 +15,21 @@ import java.util.Properties;
 
 public class DBConnection {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DBConnection.class);
     private static Connection connection;
-    private FileInputStream fis;
-    private static Properties properties = new Properties();
+    private static final Properties properties = new Properties();
 
     {
         try {
-            fis =
+            FileInputStream fis =
                 new FileInputStream(new File(this.getClass().getClassLoader().getResource("db.properties").toURI()));
             properties.load(fis);
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            LOG.debug("File input stream not initiated because of {}", e.getMessage());
+        } catch (URISyntaxException e) {
+            LOG.debug("File URL not converted to URI because of {}", e.getMessage());
+        } catch (IOException e) {
+            LOG.debug("Properties not load file input stream because of {}", e.getMessage());
         }
     }
 
@@ -34,7 +42,7 @@ public class DBConnection {
                                                          properties.getProperty("db.password"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.debug("Connection not received because of {}", e.getMessage());
         }
         return connection;
     }
