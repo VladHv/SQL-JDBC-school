@@ -2,9 +2,9 @@ package ua.foxminded.herasimov.task7.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ua.foxminded.herasimov.task7.dao.CourseDao;
-import ua.foxminded.herasimov.task7.dao.GroupDao;
-import ua.foxminded.herasimov.task7.dao.StudentDao;
+import ua.foxminded.herasimov.task7.dao.impl.CourseDaoImpl;
+import ua.foxminded.herasimov.task7.dao.impl.GroupDaoImpl;
+import ua.foxminded.herasimov.task7.dao.impl.StudentDaoImpl;
 import ua.foxminded.herasimov.task7.entity.Course;
 import ua.foxminded.herasimov.task7.entity.Group;
 import ua.foxminded.herasimov.task7.entity.Student;
@@ -18,9 +18,9 @@ import java.util.Random;
 public class DBTestDataGenerator {
 
     private final Logger LOG = LoggerFactory.getLogger(DBTestDataGenerator.class);
-    private final StudentDao studentDao;
-    private final GroupDao groupDao;
-    private final CourseDao courseDao;
+    private final StudentDaoImpl studentDao;
+    private final GroupDaoImpl groupDao;
+    private final CourseDaoImpl courseDao;
     private final DataContainer container;
     private final Random rand;
 
@@ -28,8 +28,8 @@ public class DBTestDataGenerator {
     private final List<Student> generatedStudents = new ArrayList<>();
     private final List<Group> generatedGroups = new ArrayList<>();
 
-    public DBTestDataGenerator(StudentDao studentDao, GroupDao groupDao,
-                               CourseDao courseDao, DataContainer container, Random rand) {
+    public DBTestDataGenerator(StudentDaoImpl studentDao, GroupDaoImpl groupDao,
+                               CourseDaoImpl courseDao, DataContainer container, Random rand) {
         this.studentDao = studentDao;
         this.groupDao = groupDao;
         this.courseDao = courseDao;

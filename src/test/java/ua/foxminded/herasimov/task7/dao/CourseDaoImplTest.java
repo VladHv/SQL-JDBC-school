@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import ua.foxminded.herasimov.task7.dao.impl.CourseDaoImpl;
 import ua.foxminded.herasimov.task7.entity.Course;
 import ua.foxminded.herasimov.task7.util.DBConnection;
 
@@ -20,14 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-class CourseDaoTest {
+class CourseDaoImplTest {
 
-    CourseDao dao = new CourseDao();
+    CourseDaoImpl dao = new CourseDaoImpl();
 
     @BeforeAll
     static void createTables() throws FileNotFoundException, URISyntaxException {
         ScriptRunner scriptRunner = new ScriptRunner(new DBConnection().getConnection());
-        File sqlScript = new File(GroupDaoTest.class.getClassLoader().getResource("create_tables.sql").toURI());
+        File sqlScript = new File(GroupDaoImplTest.class.getClassLoader().getResource("create_tables.sql").toURI());
         BufferedReader reader = new BufferedReader(new FileReader(sqlScript));
         scriptRunner.runScript(reader);
     }
@@ -35,7 +36,7 @@ class CourseDaoTest {
     @AfterAll
     static void dropTables() throws URISyntaxException, FileNotFoundException {
         ScriptRunner scriptRunner = new ScriptRunner(new DBConnection().getConnection());
-        File sqlScript = new File(GroupDaoTest.class.getClassLoader().getResource("drop_tables.sql").toURI());
+        File sqlScript = new File(GroupDaoImplTest.class.getClassLoader().getResource("drop_tables.sql").toURI());
         BufferedReader reader = new BufferedReader(new FileReader(sqlScript));
         scriptRunner.runScript(reader);
     }

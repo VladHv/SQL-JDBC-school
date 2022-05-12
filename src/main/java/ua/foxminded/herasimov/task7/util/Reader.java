@@ -2,7 +2,7 @@ package ua.foxminded.herasimov.task7.util;
 
 import java.util.Scanner;
 
-public class UserAsker {
+public class Reader {
 
     private final Scanner scanner = new Scanner(System.in);
 

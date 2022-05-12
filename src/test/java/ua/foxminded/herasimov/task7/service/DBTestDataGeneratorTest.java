@@ -5,9 +5,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import ua.foxminded.herasimov.task7.dao.CourseDao;
-import ua.foxminded.herasimov.task7.dao.GroupDao;
-import ua.foxminded.herasimov.task7.dao.StudentDao;
+import ua.foxminded.herasimov.task7.dao.impl.CourseDaoImpl;
+import ua.foxminded.herasimov.task7.dao.impl.GroupDaoImpl;
+import ua.foxminded.herasimov.task7.dao.impl.StudentDaoImpl;
 import ua.foxminded.herasimov.task7.entity.Course;
 import ua.foxminded.herasimov.task7.entity.Group;
 import ua.foxminded.herasimov.task7.entity.Student;
@@ -22,9 +22,9 @@ import java.util.stream.IntStream;
 
 class DBTestDataGeneratorTest {
 
-    static StudentDao studentDao = Mockito.mock(StudentDao.class);
-    static GroupDao groupDao = Mockito.mock(GroupDao.class);
-    static CourseDao courseDao = Mockito.mock(CourseDao.class);
+    static StudentDaoImpl studentDao = Mockito.mock(StudentDaoImpl.class);
+    static GroupDaoImpl groupDao = Mockito.mock(GroupDaoImpl.class);
+    static CourseDaoImpl courseDao = Mockito.mock(CourseDaoImpl.class);
     static DataContainer container = Mockito.mock(DataContainer.class);
     static Random rand = Mockito.mock(Random.class);
 

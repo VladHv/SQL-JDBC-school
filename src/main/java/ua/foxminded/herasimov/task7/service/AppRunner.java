@@ -1,6 +1,6 @@
 package ua.foxminded.herasimov.task7.service;
 
-import ua.foxminded.herasimov.task7.util.UserAsker;
+import ua.foxminded.herasimov.task7.util.Reader;
 import ua.foxminded.herasimov.task7.view.AppView;
 
 import java.sql.SQLException;
@@ -10,12 +10,12 @@ public class AppRunner {
 
     private final AppService service;
     private final AppView view;
-    private final UserAsker asker;
+    private final Reader reader;
 
-    public AppRunner(AppService service, AppView view, UserAsker asker) {
+    public AppRunner(AppService service, AppView view, Reader reader) {
         this.service = service;
         this.view = view;
-        this.asker = asker;
+        this.reader = reader;
     }
 
     public void startApp() throws SQLException {
@@ -32,7 +32,7 @@ public class AppRunner {
     }
 
     private Object chooseAndRunFunction() throws SQLException {
-        int functionNumber = asker.askInt();
+        int functionNumber = reader.askInt();
         switch (functionNumber) {
             case 1:
                 return service.findAllGroupsWithLessOrEqualStudentCount();

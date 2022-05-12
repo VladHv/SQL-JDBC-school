@@ -1,15 +1,15 @@
 package ua.foxminded.herasimov.task7;
 
-import ua.foxminded.herasimov.task7.dao.CourseDao;
-import ua.foxminded.herasimov.task7.dao.GroupDao;
-import ua.foxminded.herasimov.task7.dao.StudentDao;
+import ua.foxminded.herasimov.task7.dao.impl.CourseDaoImpl;
+import ua.foxminded.herasimov.task7.dao.impl.GroupDaoImpl;
+import ua.foxminded.herasimov.task7.dao.impl.StudentDaoImpl;
 import ua.foxminded.herasimov.task7.service.AppRunner;
 import ua.foxminded.herasimov.task7.service.AppService;
 import ua.foxminded.herasimov.task7.service.DBTestDataGenerator;
 import ua.foxminded.herasimov.task7.util.DBConnection;
 import ua.foxminded.herasimov.task7.util.DBScriptRunner;
 import ua.foxminded.herasimov.task7.util.DataContainer;
-import ua.foxminded.herasimov.task7.util.UserAsker;
+import ua.foxminded.herasimov.task7.util.Reader;
 import ua.foxminded.herasimov.task7.view.AppView;
 
 import java.sql.Connection;
@@ -26,9 +26,9 @@ public class SQLSchool {
             scriptRunner.runScript(sqlScriptFile);
         }
 
-        CourseDao courseDao = new CourseDao();
-        GroupDao groupDao = new GroupDao();
-        StudentDao studentDao = new StudentDao();
+        CourseDaoImpl courseDao = new CourseDaoImpl();
+        GroupDaoImpl groupDao = new GroupDaoImpl();
+        StudentDaoImpl studentDao = new StudentDaoImpl();
         DataContainer container = new DataContainer();
         Random rand = new Random();
 
@@ -36,10 +36,10 @@ public class SQLSchool {
         gen.generateTestData();
 
         AppView view = new AppView();
-        UserAsker asker = new UserAsker();
+        Reader reader = new Reader();
 
-        AppService service = new AppService(view, asker, courseDao, studentDao, groupDao);
-        AppRunner runner = new AppRunner(service, view, asker);
+        AppService service = new AppService(view, reader, courseDao, studentDao, groupDao);
+        AppRunner runner = new AppRunner(service, view, reader);
         runner.startApp();
 
     }
