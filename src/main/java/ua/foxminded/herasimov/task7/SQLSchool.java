@@ -5,8 +5,8 @@ import ua.foxminded.herasimov.task7.dao.impl.GroupDaoImpl;
 import ua.foxminded.herasimov.task7.dao.impl.StudentDaoImpl;
 import ua.foxminded.herasimov.task7.service.AppRunner;
 import ua.foxminded.herasimov.task7.service.AppService;
-import ua.foxminded.herasimov.task7.service.DBTestDataGenerator;
-import ua.foxminded.herasimov.task7.util.DBConnection;
+import ua.foxminded.herasimov.task7.service.DBDataGenerator;
+import ua.foxminded.herasimov.task7.dao.DBConnection;
 import ua.foxminded.herasimov.task7.util.DBScriptRunner;
 import ua.foxminded.herasimov.task7.util.DataContainer;
 import ua.foxminded.herasimov.task7.util.Reader;
@@ -32,7 +32,7 @@ public class SQLSchool {
         DataContainer container = new DataContainer();
         Random rand = new Random();
 
-        DBTestDataGenerator gen = new DBTestDataGenerator(studentDao, groupDao, courseDao, container, rand);
+        DBDataGenerator gen = new DBDataGenerator(studentDao, groupDao, courseDao, container, rand);
         gen.generateTestData();
 
         AppView view = new AppView();

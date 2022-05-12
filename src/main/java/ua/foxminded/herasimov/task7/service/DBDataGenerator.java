@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DBTestDataGenerator {
+public class DBDataGenerator {
 
-    private final Logger LOG = LoggerFactory.getLogger(DBTestDataGenerator.class);
+    private final Logger LOG = LoggerFactory.getLogger(DBDataGenerator.class);
     private final StudentDaoImpl studentDao;
     private final GroupDaoImpl groupDao;
     private final CourseDaoImpl courseDao;
@@ -28,8 +28,8 @@ public class DBTestDataGenerator {
     private final List<Student> generatedStudents = new ArrayList<>();
     private final List<Group> generatedGroups = new ArrayList<>();
 
-    public DBTestDataGenerator(StudentDaoImpl studentDao, GroupDaoImpl groupDao,
-                               CourseDaoImpl courseDao, DataContainer container, Random rand) {
+    public DBDataGenerator(StudentDaoImpl studentDao, GroupDaoImpl groupDao,
+                           CourseDaoImpl courseDao, DataContainer container, Random rand) {
         this.studentDao = studentDao;
         this.groupDao = groupDao;
         this.courseDao = courseDao;

@@ -20,26 +20,29 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-class DBTestDataGeneratorTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    static StudentDaoImpl studentDao = Mockito.mock(StudentDaoImpl.class);
-    static GroupDaoImpl groupDao = Mockito.mock(GroupDaoImpl.class);
-    static CourseDaoImpl courseDao = Mockito.mock(CourseDaoImpl.class);
-    static DataContainer container = Mockito.mock(DataContainer.class);
-    static Random rand = Mockito.mock(Random.class);
+class DBDataGeneratorTest {
 
-    static DBTestDataGenerator dataGenerator = new DBTestDataGenerator(studentDao, groupDao, courseDao, container,
-                                                                       rand);
+    private static final StudentDaoImpl studentDao = Mockito.mock(StudentDaoImpl.class);
+    private static final GroupDaoImpl groupDao = Mockito.mock(GroupDaoImpl.class);
+    private static final CourseDaoImpl courseDao = Mockito.mock(CourseDaoImpl.class);
+    private static final DataContainer container = Mockito.mock(DataContainer.class);
+    private static final Random rand = Mockito.mock(Random.class);
 
-    static List<String> courseNames;
-    static List<String> studentFirstNames;
-    static List<String> studentLastNames;
+    private static final DBDataGenerator dataGenerator =
+        new DBDataGenerator(studentDao, groupDao, courseDao, container,
+                            rand);
 
-    static List<Course> expectedCourses = new ArrayList<>();
-    static List<Student> expectedStudents = new ArrayList<>();
-    static List<Group> groupsFromDB = new ArrayList<>();
-    static List<Student> studentsFromDB = new ArrayList<>();
-    static List<Course> coursesFromDB = new ArrayList<>();
+    private static List<String> courseNames;
+    private static List<String> studentFirstNames;
+    private static List<String> studentLastNames;
+
+    private static final List<Course> expectedCourses = new ArrayList<>();
+    private static final List<Student> expectedStudents = new ArrayList<>();
+    private static final List<Group> groupsFromDB = new ArrayList<>();
+    private static final List<Student> studentsFromDB = new ArrayList<>();
+    private static final List<Course> coursesFromDB = new ArrayList<>();
 
     @BeforeAll
     static void initData() throws SQLException {
@@ -91,7 +94,7 @@ class DBTestDataGeneratorTest {
 
     @Test
     void generateTestData_shouldFillCoursesList_whenRunGenerateCoursesMethod() throws SQLException {
-        Assertions.assertEquals(expectedCourses, dataGenerator.getGeneratedCourses());
+        assertEquals(expectedCourses, dataGenerator.getGeneratedCourses());
     }
 
     @Test
@@ -101,7 +104,7 @@ class DBTestDataGeneratorTest {
 
     @Test
     void generateTestData_shouldGenerateTenGroups_whenRunGenerateGroupsMethod() throws SQLException {
-        Assertions.assertEquals(10, dataGenerator.getGeneratedGroups().size());
+        assertEquals(10, dataGenerator.getGeneratedGroups().size());
     }
 
     @Test
@@ -129,13 +132,13 @@ class DBTestDataGeneratorTest {
 
     @Test
     void generateTestData_shouldGenerateTwoHundredStudents_whenRunGenerateStudentsMethod() throws SQLException {
-        Assertions.assertEquals(200, dataGenerator.getGeneratedStudents().size());
+        assertEquals(200, dataGenerator.getGeneratedStudents().size());
     }
 
     @Test
     void generateTestData_shouldGenerateTwoHundredStudentsWithTheSecondFirstNameAndTheSecondLastName_whenRandReturnsIndexOneInGenerateStudentsMethod() throws
         SQLException {
-        Assertions.assertEquals(expectedStudents, dataGenerator.getGeneratedStudents());
+        assertEquals(expectedStudents, dataGenerator.getGeneratedStudents());
     }
 
     @Test

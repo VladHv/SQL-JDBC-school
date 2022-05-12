@@ -10,13 +10,13 @@ import java.sql.SQLException;
 
 class AppRunnerTest {
 
-    AppService service = Mockito.mock(AppService.class);
+    private final AppService service = Mockito.mock(AppService.class);
 
-    AppView view = Mockito.mock(AppView.class);
+    private final AppView view = Mockito.mock(AppView.class);
 
-    Reader reader = Mockito.mock(Reader.class);
+    private final Reader reader = Mockito.mock(Reader.class);
 
-    AppRunner runner = new AppRunner(service, view, reader);
+    private final AppRunner runner = new AppRunner(service, view, reader);
 
     @Test
     void startApp_shouldBeRunThreeTimesAndShowMenu_whenUserInputNumberOfExistingFunctionTwiceAndServiceReturnNumberOrCollectionAndThenInputOtherNumber() throws

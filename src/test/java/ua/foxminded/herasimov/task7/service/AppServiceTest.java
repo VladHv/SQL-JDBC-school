@@ -1,6 +1,5 @@
 package ua.foxminded.herasimov.task7.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -19,15 +18,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class AppServiceTest {
 
-    AppView view = Mockito.mock(AppView.class);
-    Reader reader = Mockito.mock(Reader.class);
-    CourseDaoImpl courseDao = Mockito.mock(CourseDaoImpl.class);
-    StudentDaoImpl studentDao = Mockito.mock(StudentDaoImpl.class);
-    GroupDaoImpl groupDao = Mockito.mock(GroupDaoImpl.class);
+    private final AppView view = Mockito.mock(AppView.class);
+    private final Reader reader = Mockito.mock(Reader.class);
+    private final CourseDaoImpl courseDao = Mockito.mock(CourseDaoImpl.class);
+    private final StudentDaoImpl studentDao = Mockito.mock(StudentDaoImpl.class);
+    private final GroupDaoImpl groupDao = Mockito.mock(GroupDaoImpl.class);
 
-    AppService service = new AppService(view, reader, courseDao, studentDao, groupDao);
+    private final AppService service = new AppService(view, reader, courseDao, studentDao, groupDao);
 
     @Test
     void removeStudentFromCourse_shouldShowMessageAskingStudentId_whenRunMethod() throws SQLException {
@@ -46,7 +47,7 @@ class AppServiceTest {
     @Test
     void removeStudentFromCourse_shouldReturnZero_whenCourseDaoReturnEmptySetOfCourses() throws SQLException {
         Mockito.when(courseDao.getCoursesByStudentId(ArgumentMatchers.anyInt())).thenReturn(ArgumentMatchers.anySet());
-        Assertions.assertEquals(0, service.removeStudentFromCourse());
+        assertEquals(0, service.removeStudentFromCourse());
     }
 
     @Test
@@ -86,7 +87,7 @@ class AppServiceTest {
         Mockito.when(courseDao.getCoursesByStudentId(ArgumentMatchers.anyInt())).thenReturn(studentCourses);
         Mockito.when(studentDao.removeStudentFromCourse(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
                .thenReturn(1);
-        Assertions.assertEquals(1, service.removeStudentFromCourse());
+        assertEquals(1, service.removeStudentFromCourse());
     }
 
     @Test
@@ -127,7 +128,7 @@ class AppServiceTest {
     @Test
     void addStudentToCourse_shouldReturnResultOfStudentDaoMethod_whenStudentDaoMethodReturnOne() throws SQLException {
         Mockito.when(studentDao.addStudentToCourse(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(1);
-        Assertions.assertEquals(1, service.addStudentToCourse());
+        assertEquals(1, service.addStudentToCourse());
     }
 
     @Test
@@ -146,7 +147,7 @@ class AppServiceTest {
     @Test
     void deleteStudentById_shouldReturnResultOfStudentDaoMethod_whenStudentDaoMethodReturnOne() throws SQLException {
         Mockito.when(studentDao.deleteById(ArgumentMatchers.anyInt())).thenReturn(1);
-        Assertions.assertEquals(1, service.deleteStudentById());
+        assertEquals(1, service.deleteStudentById());
     }
 
     @Test
@@ -173,7 +174,7 @@ class AppServiceTest {
     @Test
     void addNewStudent_shouldReturnResultOfStudentDaoMethod_whenStudentDaoMethodReturnOne() throws SQLException {
         Mockito.when(studentDao.addStudent(new Student())).thenReturn(1);
-        Assertions.assertEquals(1, service.addNewStudent());
+        assertEquals(1, service.addNewStudent());
     }
 
     @Test
@@ -211,7 +212,7 @@ class AppServiceTest {
     void findAllStudentsRelatedToCourseWithGivenName_shouldReturnZero_whenStudentDaoReturnsEmptyStudentSet() throws
         SQLException {
         Mockito.when(studentDao.getStudentsByCourseId(ArgumentMatchers.anyInt())).thenReturn(new HashSet<>());
-        Assertions.assertEquals(0, service.findAllStudentsRelatedToCourseWithGivenName());
+        assertEquals(0, service.findAllStudentsRelatedToCourseWithGivenName());
     }
 
     @Test
@@ -220,7 +221,7 @@ class AppServiceTest {
         Set<Student> students = new HashSet<>();
         students.add(new Student());
         Mockito.when(studentDao.getStudentsByCourseId(ArgumentMatchers.anyInt())).thenReturn(students);
-        Assertions.assertEquals(students, service.findAllStudentsRelatedToCourseWithGivenName());
+        assertEquals(students, service.findAllStudentsRelatedToCourseWithGivenName());
     }
 
     @Test
@@ -243,7 +244,7 @@ class AppServiceTest {
         SQLException {
         Mockito.when(groupDao.findAllGroupsWithLessOrEqualsStudCount(ArgumentMatchers.anyInt()))
                .thenReturn(new ArrayList<>());
-        Assertions.assertEquals(0, service.findAllGroupsWithLessOrEqualStudentCount());
+        assertEquals(0, service.findAllGroupsWithLessOrEqualStudentCount());
     }
 
     @Test
@@ -252,6 +253,6 @@ class AppServiceTest {
         List<Group> groups = new ArrayList<>();
         groups.add(new Group());
         Mockito.when(groupDao.findAllGroupsWithLessOrEqualsStudCount(ArgumentMatchers.anyInt())).thenReturn(groups);
-        Assertions.assertEquals(groups, service.findAllGroupsWithLessOrEqualStudentCount());
+        assertEquals(groups, service.findAllGroupsWithLessOrEqualStudentCount());
     }
 }

@@ -1,4 +1,4 @@
-package ua.foxminded.herasimov.task7.util;
+package ua.foxminded.herasimov.task7.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ua.foxminded.herasimov.task7.dao.CourseDao;
 import ua.foxminded.herasimov.task7.entity.Course;
-import ua.foxminded.herasimov.task7.util.DBConnection;
+import ua.foxminded.herasimov.task7.dao.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

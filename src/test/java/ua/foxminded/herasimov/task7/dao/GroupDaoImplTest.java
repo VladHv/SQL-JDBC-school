@@ -2,12 +2,10 @@ package ua.foxminded.herasimov.task7.dao;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ua.foxminded.herasimov.task7.dao.impl.GroupDaoImpl;
 import ua.foxminded.herasimov.task7.entity.Group;
-import ua.foxminded.herasimov.task7.util.DBConnection;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,6 +17,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GroupDaoImplTest {
 
@@ -44,13 +45,13 @@ class GroupDaoImplTest {
     void addGroup_shouldAddRowWithNewGroupToGroupsTable_whenAddGroupObject() throws SQLException {
         Group group = new Group.Builder().withName("XX-00").build();
         dao.addGroup(group);
-        Assertions.assertTrue(findAllUtil().contains(group));
+        assertTrue(findAllUtil().contains(group));
     }
 
     @Test
     void findAll_shouldReturnListOfAllGroupsFromTable_whenTableContainsGroups() throws SQLException {
         List<Group> all = dao.findAll();
-        Assertions.assertEquals(3, all.size());
+        assertEquals(3, all.size());
     }
 
     @Test
@@ -58,7 +59,7 @@ class GroupDaoImplTest {
         SQLException {
         List<Group> actual = dao.findAllGroupsWithLessOrEqualsStudCount(2);
         Group expected = new Group.Builder().withName("AA-11").build();
-        Assertions.assertEquals(expected, actual.stream().findAny().get());
+        assertEquals(expected, actual.stream().findAny().get());
     }
 
     public List<Group> findAllUtil() throws SQLException {
