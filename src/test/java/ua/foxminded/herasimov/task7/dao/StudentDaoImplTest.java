@@ -1,5 +1,6 @@
 package ua.foxminded.herasimov.task7.dao;
 
+import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -7,10 +8,8 @@ import org.junit.jupiter.api.Test;
 import ua.foxminded.herasimov.task7.dao.impl.StudentDaoImpl;
 import ua.foxminded.herasimov.task7.entity.Student;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import javax.sql.DataSource;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,19 +20,36 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class StudentDaoImplTest {
 
-    StudentDaoImpl dao = new StudentDaoImpl();
+    private static EmbeddedPostgres db;
+
+    static {
+        try {
+            db = EmbeddedPostgres.builder().start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static DataSource dataSource = db.getPostgresDatabase();
+
+
+    private StudentDaoImpl dao = new StudentDaoImpl(dataSource.getConnection());
+
+    StudentDaoImplTest() throws IOException, SQLException {
+    }
 
     @BeforeAll
-    static void createTables() throws FileNotFoundException, URISyntaxException {
-        ScriptRunner scriptRunner = new ScriptRunner(new DBConnection().getConnection());
+    static void createTables() throws FileNotFoundException, URISyntaxException, SQLException {
+        ScriptRunner scriptRunner = new ScriptRunner(dataSource.getConnection());
         File sqlScript = new File(GroupDaoImplTest.class.getClassLoader().getResource("create_tables.sql").toURI());
         BufferedReader reader = new BufferedReader(new FileReader(sqlScript));
         scriptRunner.runScript(reader);
+
     }
 
     @AfterAll
-    static void dropTables() throws URISyntaxException, FileNotFoundException {
-        ScriptRunner scriptRunner = new ScriptRunner(new DBConnection().getConnection());
+    static void dropTables() throws URISyntaxException, FileNotFoundException, SQLException {
+        ScriptRunner scriptRunner = new ScriptRunner(dataSource.getConnection());
         File sqlScript = new File(GroupDaoImplTest.class.getClassLoader().getResource("drop_tables.sql").toURI());
         BufferedReader reader = new BufferedReader(new FileReader(sqlScript));
         scriptRunner.runScript(reader);
@@ -41,9 +57,9 @@ class StudentDaoImplTest {
 
     @Test
     void addStudent_shouldInsertNewStudentToStudentsTable_whenAddStudentObject() throws SQLException {
-        Student student = new Student.Builder().withFirstName("Jeff").withLastName("Eddy").build();
+        Student student = new Student.Builder().withGroupId(0).withFirstName("Jeff").withLastName("Eddy").build();
         dao.addStudent(student);
-        assertEquals(4, findAllUtil().size());
+        assertTrue(findAllUtil().contains(student));
     }
 
     @Test
@@ -99,7 +115,7 @@ class StudentDaoImplTest {
 
     private Map<Integer, Integer> getStudentsIdWithCoursesIdUtil() throws SQLException {
         String sql = "SELECT * FROM students_courses";
-        try (PreparedStatement statement = DBConnection.getConnection().prepareStatement(sql);
+        try (PreparedStatement statement = dataSource.getConnection().prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             Map<Integer, Integer> studentAndCourse = new HashMap<>();
             while (resultSet.next()) {
@@ -115,7 +131,7 @@ class StudentDaoImplTest {
     private Student findByIdUtil(Integer id) throws SQLException {
         String sql = "SELECT * FROM students WHERE student_id = (?)";
         Student student = new Student();
-        try (PreparedStatement statement = DBConnection.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement statement = dataSource.getConnection().prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -136,7 +152,7 @@ class StudentDaoImplTest {
 
     private List<Student> findAllUtil() throws SQLException {
         String sql = "SELECT * FROM students";
-        try (PreparedStatement statement = DBConnection.getConnection().prepareStatement(sql);
+        try (PreparedStatement statement = dataSource.getConnection().prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             List<Student> result = new ArrayList<>();
             while (resultSet.next()) {

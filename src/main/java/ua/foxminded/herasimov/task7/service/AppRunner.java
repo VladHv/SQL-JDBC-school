@@ -31,8 +31,9 @@ public class AppRunner {
             startApp();
         }
 
-        if(result instanceof Entity) {
+        if (result instanceof Entity) {
             view.showAddedObject((Entity) result);
+            startApp();
         }
     }
 

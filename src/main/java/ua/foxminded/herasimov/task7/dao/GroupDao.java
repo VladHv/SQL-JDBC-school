@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface GroupDao {
-    int addGroup(Group group) throws SQLException;
+    Group addGroup(Group group) throws SQLException;
 
     List<Group> findAll() throws SQLException;
 

@@ -15,7 +15,7 @@
         <postgresql.version>42.3.1</postgresql.version>
         <mybatis.version>3.4.1</mybatis.version>
         <mockito.version>4.3.1</mockito.version>
-        <h2database.version>2.1.210</h2database.version>
+        <otj-pg-embedded.version>0.13.4</otj-pg-embedded.version>
         <logback.version>1.2.11</logback.version>
         <slf4j.version>1.7.36</slf4j.version>
     </properties>
@@ -48,9 +48,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2database.version}</version>
+            <groupId>com.opentable.components</groupId>
+            <artifactId>otj-pg-embedded</artifactId>
+            <version>${otj-pg-embedded.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -72,6 +72,7 @@
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

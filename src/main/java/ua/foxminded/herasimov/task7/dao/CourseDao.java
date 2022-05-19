@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface CourseDao {
-    int addCourse(Course course) throws SQLException;
+    Course addCourse(Course course) throws SQLException;
 
     List<Course> findAll() throws SQLException;
 

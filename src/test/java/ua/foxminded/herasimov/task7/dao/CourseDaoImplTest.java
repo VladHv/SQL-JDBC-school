@@ -1,5 +1,6 @@
 package ua.foxminded.herasimov.task7.dao;
 
+import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -7,10 +8,8 @@ import org.junit.jupiter.api.Test;
 import ua.foxminded.herasimov.task7.dao.impl.CourseDaoImpl;
 import ua.foxminded.herasimov.task7.entity.Course;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import javax.sql.DataSource;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,19 +23,34 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CourseDaoImplTest {
 
-    CourseDaoImpl dao = new CourseDaoImpl();
+    private static EmbeddedPostgres db;
+
+    static {
+        try {
+            db = EmbeddedPostgres.builder().start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static DataSource dataSource = db.getPostgresDatabase();
+
+    private CourseDaoImpl dao = new CourseDaoImpl(dataSource.getConnection());
+
+    CourseDaoImplTest() throws SQLException {
+    }
 
     @BeforeAll
-    static void createTables() throws FileNotFoundException, URISyntaxException {
-        ScriptRunner scriptRunner = new ScriptRunner(new DBConnection().getConnection());
+    static void createTables() throws FileNotFoundException, URISyntaxException, SQLException {
+        ScriptRunner scriptRunner = new ScriptRunner(dataSource.getConnection());
         File sqlScript = new File(GroupDaoImplTest.class.getClassLoader().getResource("create_tables.sql").toURI());
         BufferedReader reader = new BufferedReader(new FileReader(sqlScript));
         scriptRunner.runScript(reader);
     }
 
     @AfterAll
-    static void dropTables() throws URISyntaxException, FileNotFoundException {
-        ScriptRunner scriptRunner = new ScriptRunner(new DBConnection().getConnection());
+    static void dropTables() throws URISyntaxException, FileNotFoundException, SQLException {
+        ScriptRunner scriptRunner = new ScriptRunner(dataSource.getConnection());
         File sqlScript = new File(GroupDaoImplTest.class.getClassLoader().getResource("drop_tables.sql").toURI());
         BufferedReader reader = new BufferedReader(new FileReader(sqlScript));
         scriptRunner.runScript(reader);
@@ -73,7 +87,7 @@ class CourseDaoImplTest {
         String sql = "SELECT * FROM courses";
         List<Course> result = new ArrayList<>();
         Course course;
-        try (PreparedStatement statement = DBConnection.getConnection().prepareStatement(sql);
+        try (PreparedStatement statement = dataSource.getConnection().prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 course = new Course.Builder()

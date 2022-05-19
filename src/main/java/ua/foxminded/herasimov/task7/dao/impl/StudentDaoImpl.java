@@ -21,6 +21,10 @@ public class StudentDaoImpl implements StudentDao {
         this.connection = DBConnection.getConnection();
     }
 
+    public StudentDaoImpl(Connection connection) {
+        this.connection = connection;
+    }
+
     public Object addStudent(Student student) throws SQLException {
         String sql = "INSERT INTO students (first_name, last_name) VALUES (?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -29,10 +33,10 @@ public class StudentDaoImpl implements StudentDao {
             statement.executeUpdate();
             try (ResultSet keys = statement.getGeneratedKeys()) {
                 keys.next();
-                return new Student.Builder().withFirstName(keys.getString("student_id"))
+                return new Student.Builder().withId(keys.getInt("student_id"))
+                                            .withFirstName(keys.getString("first_name"))
                                             .withLastName(keys.getString("last_name"))
                                             .build();
-
             }
         } catch (SQLException e) {
             logger.error("Student not added to DB because of {}", e.getMessage());
@@ -58,13 +62,12 @@ public class StudentDaoImpl implements StudentDao {
              ResultSet resultSet = statement.executeQuery()) {
             List<Student> result = new ArrayList<>();
             while (resultSet.next()) {
-                Student student = new Student.Builder()
-                    .withId(resultSet.getInt("student_id"))
-                    .withGroupId(resultSet.getInt("group_id"))
-                    .withFirstName(resultSet.getString("first_name"))
-                    .withLastName(resultSet.getString("last_name"))
-                    .build();
-                result.add(student);
+                result.add(new Student.Builder()
+                               .withId(resultSet.getInt("student_id"))
+                               .withGroupId(resultSet.getInt("group_id"))
+                               .withFirstName(resultSet.getString("first_name"))
+                               .withLastName(resultSet.getString("last_name"))
+                               .build());
             }
             return result;
         } catch (SQLException e) {

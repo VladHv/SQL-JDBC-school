@@ -2,14 +2,11 @@ package ua.foxminded.herasimov.task7.dao.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ua.foxminded.herasimov.task7.dao.DBConnection;
 import ua.foxminded.herasimov.task7.dao.GroupDao;
 import ua.foxminded.herasimov.task7.entity.Group;
-import ua.foxminded.herasimov.task7.dao.DBConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +19,21 @@ public class GroupDaoImpl implements GroupDao {
         this.connection = DBConnection.getConnection();
     }
 
-    public int addGroup(Group group) throws SQLException {
+    public GroupDaoImpl(Connection connection) {
+        this.connection = connection;
+    }
+
+    public Group addGroup(Group group) throws SQLException {
         String sql = "INSERT INTO groups (name) VALUES (?)";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, group.getName());
-            return statement.executeUpdate();
+            statement.executeUpdate();
+            try (ResultSet keys = statement.getGeneratedKeys()) {
+                keys.next();
+                return new Group.Builder().withId(keys.getInt("group_id"))
+                                          .withName(keys.getString("name"))
+                                          .build();
+            }
         } catch (SQLException e) {
             logger.error("Group not added to DB because of {}", e.getMessage());
             throw e;

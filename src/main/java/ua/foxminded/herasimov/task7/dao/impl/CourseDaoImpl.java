@@ -3,13 +3,10 @@ package ua.foxminded.herasimov.task7.dao.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ua.foxminded.herasimov.task7.dao.CourseDao;
-import ua.foxminded.herasimov.task7.entity.Course;
 import ua.foxminded.herasimov.task7.dao.DBConnection;
+import ua.foxminded.herasimov.task7.entity.Course;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,12 +21,23 @@ public class CourseDaoImpl implements CourseDao {
         this.connection = DBConnection.getConnection();
     }
 
-    public int addCourse(Course course) throws SQLException {
+    public CourseDaoImpl(Connection connection) {
+        this.connection = connection;
+    }
+
+    public Course addCourse(Course course) throws SQLException {
         String sql = "INSERT INTO courses (name, description) VALUES (?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, course.getName());
             statement.setString(2, course.getDescription());
-            return statement.executeUpdate();
+            statement.executeUpdate();
+            try (ResultSet keys = statement.getGeneratedKeys()) {
+                keys.next();
+                return new Course.Builder().withId(keys.getInt("course_id"))
+                                           .withName(keys.getString("name"))
+                                           .withDescription(keys.getString("description"))
+                                           .build();
+            }
         } catch (SQLException e) {
             logger.error("Course not added to DB because of {}", e.getMessage());
             throw e;
