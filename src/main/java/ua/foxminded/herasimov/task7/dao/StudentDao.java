@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface StudentDao {
-    int addStudent(Student student) throws SQLException;
+    Object addStudent(Student student) throws SQLException;
 
     int updateGroupByStudentId(Integer studentId, Integer groupId) throws SQLException;
 

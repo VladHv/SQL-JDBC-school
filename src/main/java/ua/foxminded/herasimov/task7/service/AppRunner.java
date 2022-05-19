@@ -1,5 +1,6 @@
 package ua.foxminded.herasimov.task7.service;
 
+import ua.foxminded.herasimov.task7.entity.Entity;
 import ua.foxminded.herasimov.task7.util.Reader;
 import ua.foxminded.herasimov.task7.view.AppView;
 
@@ -29,10 +30,14 @@ public class AppRunner {
             view.showCollection((Collection) result);
             startApp();
         }
+
+        if(result instanceof Entity) {
+            view.showAddedObject((Entity) result);
+        }
     }
 
     private Object chooseAndRunFunction() throws SQLException {
-        int functionNumber = reader.askInt();
+        int functionNumber = reader.readInt();
         switch (functionNumber) {
             case 1:
                 return service.findAllGroupsWithLessOrEqualStudentCount();

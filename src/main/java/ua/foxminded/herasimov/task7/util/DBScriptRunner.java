@@ -13,8 +13,8 @@ import java.sql.Connection;
 
 public class DBScriptRunner {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DBScriptRunner.class);
-    private Connection connection;
+    private static final Logger logger = LoggerFactory.getLogger(DBScriptRunner.class);
+    private final Connection connection;
 
     public DBScriptRunner(Connection connection) {
         this.connection = connection;
@@ -28,7 +28,7 @@ public class DBScriptRunner {
             BufferedReader reader = new BufferedReader(new FileReader(sqlScript));
             scriptRunner.runScript(reader);
         } catch (FileNotFoundException | URISyntaxException e) {
-            LOG.debug("Script not launch because of {}", e.getMessage());
+            logger.error("Script not launch because of {}", e.getMessage());
         }
     }
 }

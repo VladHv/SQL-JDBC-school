@@ -15,7 +15,7 @@ import java.util.List;
 
 public class GroupDaoImpl implements GroupDao {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GroupDaoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(GroupDaoImpl.class);
     private final Connection connection;
 
     public GroupDaoImpl() {
@@ -28,7 +28,7 @@ public class GroupDaoImpl implements GroupDao {
             statement.setString(1, group.getName());
             return statement.executeUpdate();
         } catch (SQLException e) {
-            LOG.debug("Group not added to DB because of {}", e.getMessage());
+            logger.error("Group not added to DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -47,7 +47,7 @@ public class GroupDaoImpl implements GroupDao {
             }
             return result;
         } catch (SQLException e) {
-            LOG.debug("All groups not taken from DB because of {}", e.getMessage());
+            logger.error("All groups not taken from DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -74,7 +74,7 @@ public class GroupDaoImpl implements GroupDao {
                 }
             }
         } catch (SQLException e) {
-            LOG.debug("Groups with required student count not taken from DB because of {}", e.getMessage());
+            logger.error("Groups with required student count not taken from DB because of {}", e.getMessage());
             throw e;
         }
         return result;

@@ -15,7 +15,7 @@ import java.util.Properties;
 
 public class DBConnection {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DBConnection.class);
+    private static final Logger logger = LoggerFactory.getLogger(DBConnection.class);
     private static Connection connection;
     private static final Properties properties = new Properties();
 
@@ -25,11 +25,11 @@ public class DBConnection {
                 new FileInputStream(new File(this.getClass().getClassLoader().getResource("db.properties").toURI()));
             properties.load(fis);
         } catch (FileNotFoundException e) {
-            LOG.debug("File input stream not initiated because of {}", e.getMessage());
+            logger.error("File input stream not initiated because of {}", e.getMessage());
         } catch (URISyntaxException e) {
-            LOG.debug("File URL not converted to URI because of {}", e.getMessage());
+            logger.error("File URL not converted to URI because of {}", e.getMessage());
         } catch (IOException e) {
-            LOG.debug("Properties not load file input stream because of {}", e.getMessage());
+            logger.error("Properties not load file input stream because of {}", e.getMessage());
         }
     }
 
@@ -42,7 +42,7 @@ public class DBConnection {
                                                          properties.getProperty("db.password"));
             }
         } catch (SQLException e) {
-            LOG.debug("Connection not received because of {}", e.getMessage());
+            logger.error("Connection not received because of {}", e.getMessage());
         }
         return connection;
     }

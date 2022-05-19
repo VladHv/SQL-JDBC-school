@@ -40,10 +40,10 @@ class StudentDaoImplTest {
     }
 
     @Test
-    void add_shouldInsertNewStudentToStudentsTable_whenAddStudentObject() throws SQLException {
-        Student student = new Student.Builder().withGroupId(0).withFirstName("Jeff").withLastName("Eddy").build();
+    void addStudent_shouldInsertNewStudentToStudentsTable_whenAddStudentObject() throws SQLException {
+        Student student = new Student.Builder().withFirstName("Jeff").withLastName("Eddy").build();
         dao.addStudent(student);
-        assertTrue(findAllUtil().contains(student));
+        assertEquals(4, findAllUtil().size());
     }
 
     @Test

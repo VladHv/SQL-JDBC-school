@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class CourseDaoImpl implements CourseDao {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CourseDaoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(CourseDaoImpl.class);
     private final Connection connection;
 
     public CourseDaoImpl() {
@@ -31,7 +31,7 @@ public class CourseDaoImpl implements CourseDao {
             statement.setString(2, course.getDescription());
             return statement.executeUpdate();
         } catch (SQLException e) {
-            LOG.debug("Course not added to DB because of {}", e.getMessage());
+            logger.error("Course not added to DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -51,7 +51,7 @@ public class CourseDaoImpl implements CourseDao {
                 result.add(course);
             }
         } catch (SQLException e) {
-            LOG.debug("All courses not taken from DB because of {}", e.getMessage());
+            logger.error("All courses not taken from DB because of {}", e.getMessage());
             throw e;
         }
         return result;
@@ -72,7 +72,7 @@ public class CourseDaoImpl implements CourseDao {
                 }
             }
         } catch (SQLException e) {
-            LOG.debug("Course not taken from DB because of {}", e.getMessage());
+            logger.error("Course not taken from DB because of {}", e.getMessage());
             throw e;
         }
         return course;
@@ -89,7 +89,7 @@ public class CourseDaoImpl implements CourseDao {
                 }
             }
         } catch (SQLException e) {
-            LOG.debug("Courses by Student ID not taken from DB because of {}", e.getMessage());
+            logger.error("Courses by Student ID not taken from DB because of {}", e.getMessage());
             throw e;
         }
         return result;

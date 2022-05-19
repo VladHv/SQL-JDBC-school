@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class DBDataGenerator {
 
-    private final Logger LOG = LoggerFactory.getLogger(DBDataGenerator.class);
+    private final Logger logger = LoggerFactory.getLogger(DBDataGenerator.class);
     private final StudentDaoImpl studentDao;
     private final GroupDaoImpl groupDao;
     private final CourseDaoImpl courseDao;
@@ -97,7 +97,7 @@ public class DBDataGenerator {
             groupsFromDB = groupDao.findAll();
             studentsFromDB = studentDao.findAll();
         } catch (SQLException e) {
-            LOG.debug("All groups and/or students list(s) not received because of {}", e.getMessage());
+            logger.error("All groups and/or students list(s) not received because of {}", e.getMessage());
         }
 
         int studentCount = 0;
@@ -118,7 +118,7 @@ public class DBDataGenerator {
             coursesFromDB = courseDao.findAll();
             studentsFromDB = studentDao.findAll();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("All courses and/or students list(s) not received because of {}", e.getMessage());
         }
         for (Student student : studentsFromDB) {
             for (int i = 0; i < (rand.nextInt(3) + 1); i++) {

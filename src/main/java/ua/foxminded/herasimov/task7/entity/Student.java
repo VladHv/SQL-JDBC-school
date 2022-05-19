@@ -3,7 +3,7 @@ package ua.foxminded.herasimov.task7.entity;
 import java.util.Objects;
 import java.util.Set;
 
-public class Student {
+public class Student implements Entity {
 
     private Integer id;
     private String firstName;

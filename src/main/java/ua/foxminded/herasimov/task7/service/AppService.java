@@ -32,40 +32,40 @@ public class AppService {
 
     public int removeStudentFromCourse() throws SQLException {
         view.showMessage(AppView.STUDENT_ID);
-        int studentId = reader.askInt();
+        int studentId = reader.readInt();
         Set<Course> studentCourses = courseDao.getCoursesByStudentId(studentId);
         if (studentCourses.isEmpty()) {
             return 0;
         } else {
             view.showCollection(studentCourses);
             view.showMessage(AppView.COURSE_ID);
-            int courseId = reader.askInt();
+            int courseId = reader.readInt();
             return studentDao.removeStudentFromCourse(studentId, courseId);
         }
     }
 
     public int addStudentToCourse() throws SQLException {
         view.showMessage(AppView.STUDENT_ID);
-        int studentId = reader.askInt();
+        int studentId = reader.readInt();
         List<Course> allCourses = courseDao.findAll();
         view.showCollection(allCourses);
         view.showMessage(AppView.COURSE_ID);
-        int courseId = reader.askInt();
+        int courseId = reader.readInt();
         return studentDao.addStudentToCourse(studentId, courseId);
     }
 
     public int deleteStudentById() throws SQLException {
         view.showMessage(AppView.STUDENT_ID);
-        int studentId = reader.askInt();
+        int studentId = reader.readInt();
         return studentDao.deleteById(studentId);
     }
 
-    public int addNewStudent() throws SQLException {
+    public Object addNewStudent() throws SQLException {
         Student student = new Student();
         view.showMessage(AppView.FIRST_NAME);
-        String firstName = reader.askString();
+        String firstName = reader.readString();
         view.showMessage(AppView.LAST_NAME);
-        String lastName = reader.askString();
+        String lastName = reader.readString();
         student.setFirstName(firstName);
         student.setLastName(lastName);
         return studentDao.addStudent(student);
@@ -75,7 +75,7 @@ public class AppService {
         List<Course> allCourses = courseDao.findAll();
         view.showCollection(allCourses);
         view.showMessage(AppView.COURSE_ID);
-        int courseId = reader.askInt();
+        int courseId = reader.readInt();
         Set<Student> students = studentDao.getStudentsByCourseId(courseId);
         if (students.isEmpty()) {
             return 0;
@@ -86,7 +86,7 @@ public class AppService {
 
     public Object findAllGroupsWithLessOrEqualStudentCount() throws SQLException {
         view.showMessage(AppView.STUDENT_COUNT);
-        int studentCount = reader.askInt();
+        int studentCount = reader.readInt();
         List<Group> groups = groupDao.findAllGroupsWithLessOrEqualsStudCount(studentCount);
         if (groups.isEmpty()) {
             return 0;

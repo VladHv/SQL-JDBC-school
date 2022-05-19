@@ -2,14 +2,11 @@ package ua.foxminded.herasimov.task7.dao.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ua.foxminded.herasimov.task7.dao.DBConnection;
 import ua.foxminded.herasimov.task7.dao.StudentDao;
 import ua.foxminded.herasimov.task7.entity.Student;
-import ua.foxminded.herasimov.task7.dao.DBConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -17,21 +14,28 @@ import java.util.Set;
 
 public class StudentDaoImpl implements StudentDao {
 
-    private static final Logger LOG = LoggerFactory.getLogger(StudentDaoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(StudentDaoImpl.class);
     private final Connection connection;
 
     public StudentDaoImpl() {
         this.connection = DBConnection.getConnection();
     }
 
-    public int addStudent(Student student) throws SQLException {
+    public Object addStudent(Student student) throws SQLException {
         String sql = "INSERT INTO students (first_name, last_name) VALUES (?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, student.getFirstName());
             statement.setString(2, student.getLastName());
-            return statement.executeUpdate();
+            statement.executeUpdate();
+            try (ResultSet keys = statement.getGeneratedKeys()) {
+                keys.next();
+                return new Student.Builder().withFirstName(keys.getString("student_id"))
+                                            .withLastName(keys.getString("last_name"))
+                                            .build();
+
+            }
         } catch (SQLException e) {
-            LOG.debug("Student not added to DB because of {}", e.getMessage());
+            logger.error("Student not added to DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -43,7 +47,7 @@ public class StudentDaoImpl implements StudentDao {
             statement.setInt(2, studentId);
             return statement.executeUpdate();
         } catch (SQLException e) {
-            LOG.debug("Group not updated with student id in DB because of {}", e.getMessage());
+            logger.error("Group not updated with student id in DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -64,7 +68,7 @@ public class StudentDaoImpl implements StudentDao {
             }
             return result;
         } catch (SQLException e) {
-            LOG.debug("All student not taken from DB because of {}", e.getMessage());
+            logger.error("All student not taken from DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -80,7 +84,7 @@ public class StudentDaoImpl implements StudentDao {
             statement.setInt(2, courseId);
             return statement.executeUpdate();
         } catch (SQLException e) {
-            LOG.debug("Student not added to course in DB because of {}", e.getMessage());
+            logger.error("Student not added to course in DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -97,7 +101,7 @@ public class StudentDaoImpl implements StudentDao {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Student not taken from DB by course id because of {}", e.getMessage());
             throw e;
         }
         return result;
@@ -109,7 +113,7 @@ public class StudentDaoImpl implements StudentDao {
             statement.setInt(1, studentId);
             return statement.executeUpdate();
         } catch (SQLException e) {
-            LOG.debug("Student not removed from DB because of {}", e.getMessage());
+            logger.error("Student not removed from DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -121,7 +125,7 @@ public class StudentDaoImpl implements StudentDao {
             statement.setInt(2, courseId);
             return statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Student not removed from course in DB because of {}", e.getMessage());
             throw e;
         }
     }
@@ -142,7 +146,7 @@ public class StudentDaoImpl implements StudentDao {
                 }
             }
         } catch (SQLException e) {
-            LOG.debug("Student not taken from DB because of {}", e.getMessage());
+            logger.error("Student not taken from DB because of {}", e.getMessage());
             throw e;
         }
         return student;

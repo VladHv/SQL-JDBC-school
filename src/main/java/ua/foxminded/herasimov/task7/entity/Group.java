@@ -2,7 +2,7 @@ package ua.foxminded.herasimov.task7.entity;
 
 import java.util.Objects;
 
-public class Group {
+public class Group implements Entity {
 
     private Integer id;
     private String name;

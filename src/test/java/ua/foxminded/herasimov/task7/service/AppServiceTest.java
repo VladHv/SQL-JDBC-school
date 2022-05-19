@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AppServiceTest {
 
@@ -39,7 +40,7 @@ class AppServiceTest {
     @Test
     void removeStudentFromCourse_shouldRequestCourseDaoToGetCoursesByStudentIdFive_whenUserInputStudentIdFive() throws
         SQLException {
-        Mockito.when(reader.askInt()).thenReturn(5);
+        Mockito.when(reader.readInt()).thenReturn(5);
         service.removeStudentFromCourse();
         Mockito.verify(courseDao, Mockito.times(1)).getCoursesByStudentId(5);
     }
@@ -73,7 +74,7 @@ class AppServiceTest {
         SQLException {
         Set<Course> studentCourses = new HashSet<>();
         studentCourses.add(new Course());
-        Mockito.when(reader.askInt()).thenReturn(13).thenReturn(25);
+        Mockito.when(reader.readInt()).thenReturn(13).thenReturn(25);
         Mockito.when(courseDao.getCoursesByStudentId(ArgumentMatchers.anyInt())).thenReturn(studentCourses);
         service.removeStudentFromCourse();
         Mockito.verify(studentDao, Mockito.times(1)).removeStudentFromCourse(13, 25);
@@ -120,7 +121,7 @@ class AppServiceTest {
     @Test
     void addStudentToCourse_shouldRunStudentDaoAddStudentToCourse_whenUserInputStudentIdAndCourseId() throws
         SQLException {
-        Mockito.when(reader.askInt()).thenReturn(13).thenReturn(25);
+        Mockito.when(reader.readInt()).thenReturn(13).thenReturn(25);
         service.addStudentToCourse();
         Mockito.verify(studentDao, Mockito.times(1)).addStudentToCourse(13, 25);
     }
@@ -139,7 +140,7 @@ class AppServiceTest {
 
     @Test
     void deleteStudentById_shouldRunStudentDaoDeleteStudentById_whenUserInputStudentId() throws SQLException {
-        Mockito.when(reader.askInt()).thenReturn(13);
+        Mockito.when(reader.readInt()).thenReturn(13);
         service.deleteStudentById();
         Mockito.verify(studentDao, Mockito.times(1)).deleteById(13);
     }
@@ -166,15 +167,16 @@ class AppServiceTest {
     void addNewStudent_shouldCreateStudentObjectSetFirstAndLastNameAndCallStudentDaoAddMethod_whenUserInputFirstAndLastName() throws
         SQLException {
         Student student = new Student.Builder().withFirstName("Bob").withLastName("Black").build();
-        Mockito.when(reader.askString()).thenReturn("Bob").thenReturn("Black");
+        Mockito.when(reader.readString()).thenReturn("Bob").thenReturn("Black");
         service.addNewStudent();
         Mockito.verify(studentDao, Mockito.times(1)).addStudent(student);
     }
 
     @Test
-    void addNewStudent_shouldReturnResultOfStudentDaoMethod_whenStudentDaoMethodReturnOne() throws SQLException {
-        Mockito.when(studentDao.addStudent(new Student())).thenReturn(1);
-        assertEquals(1, service.addNewStudent());
+    void addNewStudent_shouldReturnStudentOfStudentDaoMethod_whenStudentDaoMethodReturnStudent() throws SQLException {
+        Mockito.when(studentDao.addStudent(ArgumentMatchers.any(Student.class)))
+               .thenReturn(new Student());
+        assertTrue(service.addNewStudent() instanceof Student);
     }
 
     @Test
@@ -203,7 +205,7 @@ class AppServiceTest {
     @Test
     void findAllStudentsRelatedToCourseWithGivenName_shouldCallCorrespondingStudentDaoMethod_whenUserInputCourseId() throws
         SQLException {
-        Mockito.when(reader.askInt()).thenReturn(13);
+        Mockito.when(reader.readInt()).thenReturn(13);
         service.findAllStudentsRelatedToCourseWithGivenName();
         Mockito.verify(studentDao, Mockito.times(1)).getStudentsByCourseId(13);
     }
@@ -234,7 +236,7 @@ class AppServiceTest {
     @Test
     void findAllGroupsWithLessOrEqualStudentCount_shouldCallCorrespondingGroupDaoMethod_whenUserInputStudentCount() throws
         SQLException {
-        Mockito.when(reader.askInt()).thenReturn(13);
+        Mockito.when(reader.readInt()).thenReturn(13);
         service.findAllGroupsWithLessOrEqualStudentCount();
         Mockito.verify(groupDao, Mockito.times(1)).findAllGroupsWithLessOrEqualsStudCount(13);
     }

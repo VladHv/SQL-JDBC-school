@@ -1,5 +1,7 @@
 package ua.foxminded.herasimov.task7.view;
 
+import ua.foxminded.herasimov.task7.entity.Entity;
+
 import java.util.Collection;
 
 public class AppView {
@@ -34,4 +36,7 @@ public class AppView {
         collection.forEach(System.out::println);
     }
 
+    public void showAddedObject(Entity result) {
+        showMessage("Added new " + result.toString());
+    }
 }
